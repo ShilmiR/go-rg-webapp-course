@@ -19,6 +19,10 @@ type Joke struct {
 	Setup    string `json:"setup"`
 	Delivery string `json:"delivery"`
 	Error    bool   `json:"error"`
+	Safe     bool   `json:"safe"`
+	Flags    struct {
+		Explicit bool `json:"explicit"`
+	} `json:"flags"`
 }
 
 type Anime struct {
@@ -77,10 +81,14 @@ func main() {
 	}
 
 	// print the joke
-	fmt.Println("Category :", joke.Category)
-	fmt.Println("Type :", joke.Type)
-	fmt.Println("Setup :", joke.Setup)
-	fmt.Println("Delivery :", joke.Delivery)
+	if joke.Safe {
+		fmt.Printf("Category: %s\n", joke.Category)
+		fmt.Printf("Type: %s\n", joke.Type)
+		fmt.Printf("Setup: %s\n", joke.Setup)
+		fmt.Printf("Delivery: %s\n", joke.Delivery)
+	} else {
+		fmt.Printf("This joke is not safe for work, because it contains %t\n", joke.Flags.Explicit)
+	}
 
 	// get an anime quote from the anime API
 	anime, err := GetAnime()
@@ -91,14 +99,4 @@ func main() {
 
 	// print the anime quote
 	fmt.Printf("%s said \"%s\" in %s \n", anime.Character, anime.Quote, anime.Anime)
-
-	/*
-			- Format of the output: <anime> said "<setup>", <delivery>
-			- add flags and safe in joke struct
-		    - check if joke is safe, then print the joke, check if joke is not safe, then print "This joke is not safe for work, because it contains <flags yang true>"
-
-				Example output:
-				Fuyou Kaede said joke "I'm not saying my son is ugly...", "But on Halloween he went to tell the neighbors to turn down their TV and they gave him some candy."
-	*/
-
 }
